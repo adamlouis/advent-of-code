@@ -5,7 +5,7 @@ const lines = Utils.readLines();
 const numbers = _.map(lines, s => _.toFinite(_.replace(s, '+', '')));
 
 const part1 = _.sum(numbers)
-console.log('part 1:', part1)
+Utils.part1(part1)
 
 const seen = new Set();
 let f = 0;
@@ -16,7 +16,7 @@ while (true) {
     f += v;
 
     if (seen.has(f)) {
-        console.log('part 2:', f)
+        Utils.part2(f)
         process.exit(1)
     }
 
