@@ -3,59 +3,28 @@ const Utils = require('../utils');
 
 const lines = Utils.readLines();
 
-let two = 0;
-let three = 0;
-
+// part 1
 function hasN(s, n) {
-    const freqs = {}
-    for (let c of s) {
-        if (!freqs[c]) {
-            freqs[c] = 1;
-        } else {
-            freqs[c]++;
-        }
-    }
-
+    const freqs = _.countBy(s)
     return _.some(_.values(freqs), v => v === n)
 }
 
-for (let l of lines) {
-    if (hasN(l, 2)) {
-        two++;
-    }
-    if (hasN(l, 3)) {
-        three++;
-    }
-}
-
+const two = _.sumBy(lines, l => hasN(l, 2));
+const three = _.sumBy(lines, l => hasN(l, 3));
 console.log(`part 1:${two*three}`)
 
+// part 2
 function distance(s1, s2) {
-    let count = 0;
-    const n = _.max([s1.length, s2.length]);
-    for (let i = 0; i < n; i++) {
-        if (_.get(s1, i) !== _.get(s2, i)) {
-            count++;
-        }
-    }
-    return count;
+    const zipped = _.zip(s1.split(''), s2.split(''))
+    return _.sumBy(zipped, (z) => _.get(z, 0) !== _.get(z, 1));
 }
 
 function common(s1, s2) {
-    let result = '';
-    const n = _.max([s1.length, s2.length]);
-    for (let i = 0; i < n; i++) {
-        if (_.get(s1, i) == _.get(s2, i)) {
-            result += _.get(s1, i);
-        }
-    }
-    return result;
+    const zipped = _.zip(s1.split(''), s2.split(''))
+    const matches = _.filter(zipped, z => _.get(z, 0) === _.get(z, 1))
+    return _.join(_.map(matches, m => _.get(m, 0)), '');
 }
 
-for (var i = 0; i < lines.length; i++) {
-    for (var j = i + 1; j < lines.length; j++) {
-        if (distance(lines[i], lines[j]) == 1) {
-            console.log(`part 2: ${common(lines[i], lines[j])}`)
-        }
-    }
-}
+// one liner :)
+const part2 = _.first(_.compact(_.flatten(_.map(lines, (l1, i) => _.map(lines.slice(i), l2 => distance(l1, l2) === 1 ? common(l1, l2) : '')))));
+console.log(`part 2: ${part2}`);
