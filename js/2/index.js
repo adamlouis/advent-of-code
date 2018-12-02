@@ -1,13 +1,11 @@
+// goal: 1 liners
 const _ = require('lodash');
 const Utils = require('../utils');
 
 const lines = Utils.readLines();
 
 // part 1
-function hasN(s, n) {
-    const freqs = _.countBy(s)
-    return _.some(_.values(freqs), v => v === n)
-}
+const hasN = (s, n) => _.some(_.values(_.countBy(s)), v => v === n);
 
 const two = _.sumBy(lines, l => hasN(l, 2));
 const three = _.sumBy(lines, l => hasN(l, 3));
