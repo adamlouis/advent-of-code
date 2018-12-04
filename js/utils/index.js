@@ -11,7 +11,7 @@ const Utils = {
 
     makeArray1D: (n, v) => {
         const a = new Array(n);
-        return _.map(a, i => _.isFunction(v) ? v() : v);
+        return _.map(a, (x, i) => _.isFunction(v) ? v(i) : v);
     },
     makeArray2D: (w, h, v) => {
         const a = new Array(h);
