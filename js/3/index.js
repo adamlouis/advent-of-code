@@ -7,7 +7,7 @@ const lines = Utils.readLines();
 // parse input
 function lineToClaim(l) {
     const parts = _.split(_.replace(l, ':', ''), ' ');
-    const id = parts[0];
+    const id = _.replace(parts[0], '#', '');
     const xy = _.split(parts[2], ',')
     const wh = _.split(parts[3], 'x')
     
