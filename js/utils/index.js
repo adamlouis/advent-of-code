@@ -8,6 +8,16 @@ const Utils = {
     readLines: () => _.split(Utils.readString(), '\n'),
     part1: (v) => console.log(`day=${day} part_1=${v}`),
     part2: (v) => console.log(`day=${day} part_2=${v}`),
+
+    makeArray1D: (n, v) => {
+        const a = new Array(n);
+        return _.map(a, i => _.isFunction(v) ? v() : v);
+    },
+    makeArray2D: (w, h, v) => {
+        const a = new Array(h);
+        return _.map(a, i => Utils.makeArray1D(w, v));
+    },
+
 }
 
 module.exports = Utils;
