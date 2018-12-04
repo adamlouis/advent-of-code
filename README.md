@@ -1,6 +1,6 @@
 # 2018-advent-of-code
 
-Solutions to: <a href='https://adventofcode.com/2018'>2018 advent of code</a>
+Solutions to <a href='https://adventofcode.com/2018'>2018 advent of code</a>
 
 - <a href='https://github.com/adamlouis/2018-advent-of-code/tree/master/js/1'>01 - js</a>
 - <a href='https://github.com/adamlouis/2018-advent-of-code/tree/master/js/2'>02 - js</a>
