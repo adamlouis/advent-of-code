@@ -48,16 +48,16 @@
         (def child_count (get-child-count n))
         (def result (
             if (= child_count 0)
-            (subvec n 0 (+ 2 meta_count))
+            (Node. (subvec n 2 (+2 meta_count)) [])
             (do
                 (def tail (subvec n 2))
                 (def children (get-n tail child_count []))
+                (println "CHILDREN" children)
                 ; (def lengths [4])
                 ; (def children_length (reduce + lengths 0))
                 (def children_length 5)
                 (def self_length (+ 2 (+ meta_count children_length)))
                 
-                (println "CHILDREN" children)
                 (println "FLAT" (flatten children))
                 ; (println "C_FLAT" (count (get children 0)))
                 ; (println "COUNT:" meta_count (count (flatten children)))
