@@ -51,8 +51,6 @@
                 (def strlen (+ 2 (+ meta_count children_length)))
                 
                 (def metadata (subvec v (- strlen meta_count) strlen))
-
-                (def self (subvec v 0 strlen))
                 (Node. metadata children strlen)
             )
         ))
@@ -76,7 +74,6 @@
 )
 
 ; PART 2 ----------------------------------------
-
 (defn sum-meta [n] (reduce + 0 (:metadata n)))
 (defn sum-list [l] (reduce + 0 l))
 
