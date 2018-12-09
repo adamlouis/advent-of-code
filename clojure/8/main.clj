@@ -4,108 +4,121 @@
 ; 2 3 0 3 10 11 12 1 1 0 1 99 2 1 1 2
 ; HEADER = # CHILDREN | # METADATA | [CHILD NODES] | METADATA
 
-(def data (slurp "./clojure/8/data.txt"))
-(def fields (mapv #(Integer/parseInt %) (str/split data #" ")))
-
-(println data)
-(println "Hello World")
-(println (str "Hello World"))
-(println (str fields))
-
+; DATATYPES ----------------------------------------
 (defn get-child-count [n] (get n 0))
 (defn get-metadata-count [n] (get n 1))
+(defrecord Node [metadata children strlen])
 
-; (defn sum-meta [n] (do
-;     (def len (count n))
-;     (def meta_count (get-metadata-count n))
-;     (reduce + (subvec n (- len meta_count) len) 0)
-; ))
+; BUILD TREE ----------------------------------------
+(declare build-n-nodes build-first-node)
 
-(defrecord Node [metadata children])
-
-(declare get-first)
-
-(defn get-n [n remaining result]
+(defn build-n-nodes [v remaining result]
     (do
-        ; (println "CALL:get-n:" remaining n)
         (if (= remaining 0)
             result
             (do
-                (def furst (get-first n))
-                ; (println "RESULT:get-first:" remaining furst)
-                ; result
-                ; (recur n (- remaining 1) result)
-                (recur (subvec n (count furst)) (- remaining 1) (conj result furst))
+                (def furst (build-first-node v))
+                (recur (subvec v (:strlen furst)) (- remaining 1) (conj result furst))
             )
         )
     )
 )
 
-(defn get-first [n]
+(defn build-first-node [v]
     (do
-        (println "CALL:get-first:" n)
-        (def meta_count (get-metadata-count n))
-        (def child_count (get-child-count n))
+        (def meta_count (get-metadata-count v))
+        (def child_count (get-child-count v))
         (def result (
             if (= child_count 0)
-            (Node. (subvec n 2 (+2 meta_count)) [])
             (do
-                (def tail (subvec n 2))
-                (def children (get-n tail child_count []))
-                (println "CHILDREN" children)
-                ; (def lengths [4])
-                ; (def children_length (reduce + lengths 0))
-                (def children_length 5)
-                (def self_length (+ 2 (+ meta_count children_length)))
-                
-                (println "FLAT" (flatten children))
-                ; (println "C_FLAT" (count (get children 0)))
-                ; (println "COUNT:" meta_count (count (flatten children)))
+                (def strlen (+ 2 meta_count))
+                (def metadata (subvec v 2 strlen))
+                (def children [])
+                (Node. metadata children strlen)
+            )
+            (do
+                (def tail (subvec v 2))
+                (def children (build-n-nodes tail child_count []))
 
-                (def self (subvec n 0 self_length))
-                [self children]
+                ; --------------------------                
+                ; these get overwritten w/ mutual recusion. i don't understand why.
+                (def meta_count (get-metadata-count v))
+                (def child_count (get-child-count v))
+                ; --------------------------
+
+                (def lengths (mapv #(:strlen %) children))
+                (def children_length (reduce + lengths))
+                (def strlen (+ 2 (+ meta_count children_length)))
+                
+                (def metadata (subvec v (- strlen meta_count) strlen))
+
+                (def self (subvec v 0 strlen))
+                (Node. metadata children strlen)
             )
         ))
     result)
 )
 
-(defn unnest [v, result]
+; PART 1 ----------------------------------------
+(defn sum-all-metadata [l result]
     (do
-        (println v)
         (
-            if (vector? (get v 0))
-            (recur (get v 1) (conj result (get v 0)))
-            (if v (conj result v) result)
+            if (= 0 (count l))
+            result
+            (do
+                (def metadatas (flatten (mapv  #(:metadata %) l)))
+                (def children (flatten (mapv  #(:children %) l)))
+                (def sum (reduce + 0 metadatas))
+                (recur children (+ result sum))
+            )
         )
     )
 )
-; (defn get-node-count [n, result]
-;     (do
-;         (println v)
-;         (
-;             if (vector? (get v 0))
-;             (recur (get v 1) (conj result (get v 0)))
-;             (if v (conj result v) result)
-;         )
-;     )
-; )
 
+; PART 2 ----------------------------------------
 
+(defn sum-meta [n] (reduce + 0 (:metadata n)))
+(defn sum-list [l] (reduce + 0 l))
 
+(defn get-indexed-children [n] (do
+    (defn in_bounds? [idx]
+        (and
+            (> idx -1)
+            (< idx (count (:children n)))
+        )
+    )
 
+    (def meta_idxs (mapv (fn [x] (- x 1)) (:metadata n)))
+    (def valid_meta_idxs (filter in_bounds? meta_idxs))
+    (def children (mapv (fn [x] (get (:children n) x)) valid_meta_idxs))
 
+    children
+))
 
+(defn sum-all-values [l result]
+    (
+        if (= 0 (count l))
+        result
+        (do
+            (defn children? [n] (> (count (:children n)) 0))
+            (defn not_children? [n] (not (children? n)))
 
-(println (get-child-count fields))
-(println (get-metadata-count fields))
-; (println (get-node-length fields))
-(def root (get-first fields))
-(def nodes (unnest root []))
-; (def part1 (sum-meta nodes))
+            (def with_children (filter children? l))
+            (def without_children (filter not_children? l))
 
-(println "root = " root)
-(println "nodes = " nodes)
-; (println "part1 = " part1)
+            (def sum_without_children (sum-list (mapv sum-meta without_children)))
+            (def filtered_children (flatten (mapv get-indexed-children with_children)))
+            (recur filtered_children (+ result sum_without_children))
+        )
+    )
+)
 
+(def data (slurp "./clojure/8/data.txt"))
+(def fields (mapv #(Integer/parseInt %) (str/split data #" ")))
 
-; (defn get-child-count [start])
+(def root (trampoline build-first-node fields))
+(def part1 (sum-all-metadata [root] 0))
+(def part2 (sum-all-values [root] 0))
+
+(println "day=8 part_1=" part1 "[clojure]")
+(println "day=8 part_2=" part2 "[clojure]")

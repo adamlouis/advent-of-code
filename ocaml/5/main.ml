@@ -193,9 +193,9 @@ let data = read_file_string "./ocaml/5/data.txt";;
 
 (* PURE -------------------------------------------------------------- *)
 (* PART 1 *)
-let part1_pure = List.length (destroy_all (explode data));;
+(* let part1_pure = List.length (destroy_all (explode data));;
 Printf.printf "part=5 part_1=%d [ocaml][pure]\n" (part1_pure);;
-Pervasives.flush_all();;
+Pervasives.flush_all();; *)
 
 (* MUTABLE -------------------------------------------------------------- *)
 (* PART 1 *)

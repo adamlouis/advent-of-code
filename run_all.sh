@@ -10,3 +10,4 @@ node js/5
 ocaml ocaml/5/main.ml
 node js/6
 node js/7
+clojure clojure/8/main.clj
