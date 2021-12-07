@@ -32,30 +32,19 @@ fn part1(values: &mut Vec<u32>) -> u32 {
 }
 
 fn part2(values: &mut Vec<u32>) -> i32 {
-    let mut min: u32 = values[0];
-    let mut max: u32 = values[0];
-
-    for vp in (&values).iter() {
-        let v = *vp;
-        if v < min {
-            min = v;
-        }
-        if v > max {
-            max = v;
-        }
+    let mut meanf: f64 = 0.0;
+    for v in (&values).iter() {
+        meanf += (*v as f64) / (values.len() as f64);
     }
+    let mean = meanf.floor() as u32;
+    min(get_fuel(values, mean), get_fuel(values, mean + 1))
+}
 
-    let mut minf: i32 = get_fuel(values, min);
-
-    // probably could binary search it or terminate early once it starts increasing
-    for i in min..(max + 1) {
-        let f = get_fuel(values, i);
-        if f < minf {
-            minf = f;
-        }
+fn min(a: i32, b: i32) -> i32 {
+    if a < b {
+        return a;
     }
-
-    minf
+    return b;
 }
 
 fn get_fuel(values: &Vec<u32>, target: u32) -> i32 {
@@ -71,7 +60,6 @@ fn get_fuel_n(n: i32) -> i32 {
     if n <= 0 {
         return 0;
     }
-
     if n % 2 == 0 {
         return (n + 1) * (n / 2);
     }
