@@ -67,6 +67,7 @@ fn matches(open: char, close: char) -> bool {
 
 fn points(c: char) -> u32 {
     match c {
+        // part 1
         ')' => 3,
         ']' => 57,
         '}' => 1197,
