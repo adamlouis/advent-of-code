@@ -78,12 +78,13 @@ fn part2(nodes: &HashMap<&str, Vec<&str>>) -> usize {
         for p in paths {
             let last = p[p.len() - 1];
             for conn in &nodes[last] {
-                let mut step = p.clone();
+                let mut step = p.clone(); // slow, could mutate in dfs
                 step.push(conn);
 
                 if *conn == "end" {
                     done.push(step);
                 } else if valid2(&step) {
+                    // valid2(...) is slow
                     next.push(step);
                 }
             }
@@ -93,6 +94,7 @@ fn part2(nodes: &HashMap<&str, Vec<&str>>) -> usize {
     return done.len();
 }
 
+// slow, use a map
 fn valid2(path: &Vec<&str>) -> bool {
     let mut seen: HashSet<&str> = HashSet::new();
     let mut extra = false;
