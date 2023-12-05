@@ -7,6 +7,7 @@ fn main() {
         Box::new(aoc::Day01 {}),
         Box::new(aoc::Day02 {}),
         Box::new(aoc::Day03 {}),
+        Box::new(aoc::Day04 {}),
     ];
 
     println!("----------------------------------------------------------------");
